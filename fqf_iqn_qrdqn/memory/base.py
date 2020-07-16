@@ -59,6 +59,7 @@ class LazyMemory(dict):
         self['state'] = []
         self['next_state'] = []
 
+        # print("Capacity", self.capacity)
         self['action'] = np.empty((self.capacity, 1), dtype=np.int64)
         self['reward'] = np.empty((self.capacity, 1), dtype=np.float32)
         self['done'] = np.empty((self.capacity, 1), dtype=np.float32)

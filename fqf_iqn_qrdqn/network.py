@@ -26,17 +26,17 @@ class Flatten(nn.Module):
 
 class DQNBase(nn.Module):
 
-    def __init__(self, num_channels, embedding_dim=7*7*64):
+    def __init__(self, num_channels, embedding_dim=64):
         super(DQNBase, self).__init__()
 
         self.net = nn.Sequential(
-            nn.Conv2d(num_channels, 32, kernel_size=8, stride=4, padding=0),
+            nn.Linear(num_channels, 32),
             nn.ReLU(),
-            nn.Conv2d(32, 64, kernel_size=4, stride=2, padding=0),
+            nn.Linear(32, 64),
             nn.ReLU(),
-            nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=0),
+            nn.Linear(64, 64),
             nn.ReLU(),
-            Flatten(),
+            nn.Flatten(),
         ).apply(initialize_weights_he)
 
         self.embedding_dim = embedding_dim
@@ -48,12 +48,13 @@ class DQNBase(nn.Module):
         state_embedding = self.net(states)
         assert state_embedding.shape == (batch_size, self.embedding_dim)
 
+        # print("State Embedding Shape", state_embedding.shape)
         return state_embedding
 
 
 class FractionProposalNetwork(nn.Module):
 
-    def __init__(self, N=32, embedding_dim=7*7*64):
+    def __init__(self, N=32, embedding_dim=64):
         super(FractionProposalNetwork, self).__init__()
 
         self.net = nn.Sequential(
@@ -94,7 +95,7 @@ class FractionProposalNetwork(nn.Module):
 
 class CosineEmbeddingNetwork(nn.Module):
 
-    def __init__(self, num_cosines=64, embedding_dim=7*7*64, noisy_net=False):
+    def __init__(self, num_cosines=64, embedding_dim=64, noisy_net=False):
         super(CosineEmbeddingNetwork, self).__init__()
         linear = NoisyLinear if noisy_net else nn.Linear
 
@@ -128,7 +129,7 @@ class CosineEmbeddingNetwork(nn.Module):
 
 class QuantileNetwork(nn.Module):
 
-    def __init__(self, num_actions, embedding_dim=7*7*64, dueling_net=False,
+    def __init__(self, num_actions, embedding_dim=64, dueling_net=False,
                  noisy_net=False):
         super(QuantileNetwork, self).__init__()
         linear = NoisyLinear if noisy_net else nn.Linear
@@ -182,6 +183,7 @@ class QuantileNetwork(nn.Module):
             quantiles =\
                 baselines + advantages - advantages.mean(1, keepdim=True)
 
+        # print("Quantile Network OP", quantiles.view(batch_size, N, self.num_actions).shape)
         return quantiles.view(batch_size, N, self.num_actions)
 
 

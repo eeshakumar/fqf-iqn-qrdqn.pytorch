@@ -62,7 +62,7 @@ class BaseAgent(ABC):
         self.learning_steps = 0
         self.episodes = 0
         self.best_eval_score = -np.inf
-        self.num_actions = self.env.action_space.n
+        self.num_actions = self.env.action_space._n
         self.num_steps = num_steps
         self.batch_size = batch_size
 
@@ -163,6 +163,7 @@ class BaseAgent(ABC):
             else:
                 action = self.exploit(state)
 
+            # print(action)
             next_state, reward, done, _ = self.env.step(action)
 
             # To calculate efficiently, I just set priority=max_priority here.

@@ -59,15 +59,29 @@ def calculate_quantile_huber_loss(td_errors, taus, weights=None, kappa=1.0):
 def evaluate_quantile_at_action(s_quantiles, actions):
     assert s_quantiles.shape[0] == actions.shape[0]
 
+    # print(s_quantiles)
+    # print("Quantiles Shape", s_quantiles.shape)
     batch_size = s_quantiles.shape[0]
     N = s_quantiles.shape[1]
+    # print("Actions", actions)
+    if actions.shape[1] == 1:
+        action_index = actions[..., None].expand(batch_size, N, 1)
+    else:
+        actions_1 = actions[:,0][..., None]
+        actions_2 = actions[:,1][..., None]
+        print(actions[..., None].shape, actions_1.shape, actions_2.shape)
+        # Expand actions into (batch_size, N, 1).
+        action_index = actions[..., None].expand(batch_size, 2, N)
 
-    # Expand actions into (batch_size, N, 1).
-    action_index = actions[..., None].expand(batch_size, N, 1)
+        print(action_index.shape)
 
+        action_index = action_index.reshape(batch_size, N, 2)
+        print(action_index.shape)
+    # print(action_index)
     # Calculate quantile values at specified actions.
     sa_quantiles = s_quantiles.gather(dim=2, index=action_index)
 
+    # print(sa_quantiles.shape)
     return sa_quantiles
 
 

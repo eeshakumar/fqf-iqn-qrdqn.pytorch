@@ -28,6 +28,7 @@ class FQFAgent(BaseAgent):
             eval_interval, num_eval_steps, max_episode_steps, grad_cliping,
             cuda, seed)
 
+        # print("INIT Actions FQF", self.num_actions)
         # Online network.
         self.online_net = FQF(
             num_channels=env.observation_space.shape[0],
@@ -239,6 +240,10 @@ class FQFAgent(BaseAgent):
             assert target_sa_quantile_hats.shape == (
                 self.batch_size, 1, self.N)
 
+        c_shape = current_sa_quantile_hats.shape
+        # print("!!!", c_shape)
+        # current_sa_quantile_hats = current_sa_quantile_hats[:, :, 0]#current_sa_quantile_hats.reshape(c_shape[0], c_shape[2], c_shape[1])
+        # print("calc_quan_loss", target_sa_quantile_hats.shape, current_sa_quantile_hats.shape)
         td_errors = target_sa_quantile_hats - current_sa_quantile_hats
         assert td_errors.shape == (self.batch_size, self.N, self.N)
 

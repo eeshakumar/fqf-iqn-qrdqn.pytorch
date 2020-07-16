@@ -6,7 +6,7 @@ from fqf_iqn_qrdqn.network import DQNBase, CosineEmbeddingNetwork,\
 class FQF(BaseModel):
 
     def __init__(self, num_channels, num_actions, N=32, num_cosines=32,
-                 embedding_dim=7*7*64, dueling_net=False, noisy_net=False,
+                 embedding_dim=64, dueling_net=False, noisy_net=False,
                  target=False):
         super(FQF, self).__init__()
 

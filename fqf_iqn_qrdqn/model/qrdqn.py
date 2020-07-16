@@ -6,7 +6,7 @@ from fqf_iqn_qrdqn.network import DQNBase, NoisyLinear
 
 class QRDQN(BaseModel):
 
-    def __init__(self, num_channels, num_actions, N=200, embedding_dim=7*7*64,
+    def __init__(self, num_channels, num_actions, N=200, embedding_dim=64,
                  dueling_net=False, noisy_net=False):
         super(QRDQN, self).__init__()
         linear = NoisyLinear if noisy_net else nn.Linear
